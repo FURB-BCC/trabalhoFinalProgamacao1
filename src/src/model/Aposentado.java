@@ -2,32 +2,13 @@ package src.model;
 
 public class Aposentado extends Pessoa {
 	
-	private String empresa;
-
-	public Aposentado(String nome, Profissao profissao, String dataDeNascimento, String empresa) throws Exception {
+	public Aposentado(String nome, Profissao profissao, String dataDeNascimento) throws Exception {
 		super(nome, profissao, dataDeNascimento);
-		setEmpresa(empresa);
 	}
 	
-	/**
-	 * @return the empresa
-	 */
-	protected String getEmpresa() {
-		return empresa;
-	}
-
-	/**
-	 * @param empresa the empresa to set
-	 * @throws Exception 
-	 */
-	protected void setEmpresa(String empresa) throws Exception {
-		if(empresa == null || empresa.trim().length()<=0)
-			throw new Exception("Nome da empresa precisa ter mais de 3 caracteres.");
-		this.empresa = empresa;
-	}
 	
 	public String toString(){
-		return "Nome: " + getNome() + "\nProfissão: " + getProfissao() + "\nData de nascimento: " + getDataDeNascimento() + "\nEmpresa: " + getEmpresa();
+		return "Nome: " + getNome() + "\nProfissão: " + getProfissao() + "\nData de nascimento: " + getDataDeNascimento();
 	}
 
 }

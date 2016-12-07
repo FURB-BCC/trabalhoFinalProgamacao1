@@ -1,6 +1,6 @@
 package src.model;
 
 public enum Profissao {
-	Estudante, Aposentado;
+	Estudante, Aposentado, Empresario;
 
 }

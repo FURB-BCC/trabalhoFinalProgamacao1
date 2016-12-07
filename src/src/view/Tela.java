@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
@@ -124,8 +125,10 @@ public class Tela {
 		scrollPane_1.setBounds(21, 21, 477, 141);
 		panel_1.add(scrollPane_1);
 		
-		JList jlistPessoaCadastradas = new JList();
-		scrollPane_1.setViewportView(jlistPessoaCadastradas);
+		DefaultListModel pessoasCadastradas = new DefaultListModel();
+		
+		JList jlistPessoasCadastradas = new JList(pessoasCadastradas);
+		scrollPane_1.setViewportView(jlistPessoasCadastradas);
 		
 		JPanel panel_2 = new JPanel();
 		tabbedPane.addTab("Empr\u00E9stimos atuais", null, panel_2, null);
@@ -143,17 +146,27 @@ public class Tela {
 		scrollPane.setBounds(21, 70, 477, 92);
 		panel_2.add(scrollPane);
 		
-		JList jlistEmprestimosAtuais = new JList();
+		DefaultListModel emprestimosAtuais = new DefaultListModel();
+		
+		JList jlistEmprestimosAtuais = new JList(emprestimosAtuais);
 		scrollPane.setViewportView(jlistEmprestimosAtuais);
 		
 			
 	}
 
 	protected void jcbProfissaoActionPerformed(ActionEvent arg0) {
-		if(jcbProfissao.getSelectedItem() == Profissao.Estudante)
-			lblEmpresa.setText("Instituição:");
-		else
+		if(jcbProfissao.getSelectedItem() == Profissao.Estudante){
+			jtfEmpresa.setVisible(true);
+				lblEmpresa.setText("Instituição:");
+		}
+		else if(jcbProfissao.getSelectedItem() == Profissao.Empresario){
+			jtfEmpresa.setVisible(true);
 			lblEmpresa.setText("Empresa:");
+		}
+		else if(jcbProfissao.getSelectedItem() == Profissao.Aposentado){
+			jtfEmpresa.setVisible(false);
+			lblEmpresa.setText("");
+		}
 		
 	}
 
