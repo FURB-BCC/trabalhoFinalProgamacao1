@@ -12,7 +12,7 @@ public class Estudante extends Pessoa{
 	/**
 	 * @return the empresa
 	 */
-	protected String getInstituicao() {
+	public String getInstituicao() {
 		return instituicao;
 	}
 
@@ -29,5 +29,5 @@ public class Estudante extends Pessoa{
 	public String toString(){
 		return "Nome: " + getNome() + "\nProfissão: " + getProfissao() + "\nData de nascimento: " + getDataDeNascimento() + "\nEmpresa: " + getInstituicao();
 	}
-
+	
 }
