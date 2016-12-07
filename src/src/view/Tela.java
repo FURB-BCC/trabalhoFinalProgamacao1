@@ -25,6 +25,9 @@ public class Tela {
 	private JTextField jtfNome;
 	private JTextField jtfEmpresa;
 	private JTextField jtfDataDeNascimento;
+	private JButton jtbnCadastrar;
+	private JButton jbtnEmprestimo;
+	private JButton jbtnPago;
 	private JComboBox jcbProfissao;
 	private JLabel lblEmpresa;
 
@@ -109,7 +112,12 @@ public class Tela {
 		jcbProfissao.setBounds(134, 60, 364, 32);
 		panel.add(jcbProfissao);
 		
-		JButton jtbnCadastrar = new JButton("Cadastrar");
+		jtbnCadastrar = new JButton("Cadastrar");
+		jtbnCadastrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				jbtnCadastrarActionPerformed(arg0);
+			}
+		});
 		jtbnCadastrar.setBounds(357, 195, 141, 35);
 		panel.add(jtbnCadastrar);
 		
@@ -117,9 +125,14 @@ public class Tela {
 		tabbedPane.addTab("Pessoas cadastradas", null, panel_1, null);
 		panel_1.setLayout(null);
 		
-		JButton jbtnEmprstimo = new JButton("Empr\u00E9stimo");
-		jbtnEmprstimo.setBounds(341, 183, 157, 35);
-		panel_1.add(jbtnEmprstimo);
+		jbtnEmprestimo = new JButton("Empr\u00E9stimo");
+		jbtnEmprestimo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jbtnEmprestimoActionPerformed(e);
+			}
+		});
+		jbtnEmprestimo.setBounds(341, 183, 157, 35);
+		panel_1.add(jbtnEmprestimo);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(21, 21, 477, 141);
@@ -138,7 +151,12 @@ public class Tela {
 		jcbEmprestimosAtuais.setBounds(21, 21, 477, 32);
 		panel_2.add(jcbEmprestimosAtuais);
 		
-		JButton jbtnPago = new JButton("Pago");
+		jbtnPago = new JButton("Pago");
+		jbtnPago.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jbtnPagoActionPerformed(e);
+			}
+		});
 		jbtnPago.setBounds(357, 183, 141, 35);
 		panel_2.add(jbtnPago);
 		
@@ -154,10 +172,25 @@ public class Tela {
 			
 	}
 
+	protected void jbtnPagoActionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void jbtnEmprestimoActionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	protected void jbtnCadastrarActionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	protected void jcbProfissaoActionPerformed(ActionEvent arg0) {
 		if(jcbProfissao.getSelectedItem() == Profissao.Estudante){
 			jtfEmpresa.setVisible(true);
-				lblEmpresa.setText("Instituição:");
+			lblEmpresa.setText("Instituição:");
 		}
 		else if(jcbProfissao.getSelectedItem() == Profissao.Empresario){
 			jtfEmpresa.setVisible(true);
