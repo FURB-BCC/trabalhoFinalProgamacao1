@@ -6,7 +6,7 @@ public class Aposentado extends Pessoa {
 		super(nome, profissao, dataDeNascimento);
 	}
 	
-	
+	// teste
 	public String toString(){
 		return "Nome: " + getNome() + "\nProfissão: " + getProfissao() + "\nData de nascimento: " + getDataDeNascimento();
 	}
