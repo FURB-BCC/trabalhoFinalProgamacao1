@@ -17,6 +17,7 @@ import javax.swing.JList;
 import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
 public class Tela {
@@ -30,6 +31,7 @@ public class Tela {
 	private JButton jbtnPago;
 	private JComboBox jcbProfissao;
 	private JLabel lblEmpresa;
+	private ArrayList<Pessoa> cadastro;
 
 	/**
 	 * Launch the application.
@@ -63,6 +65,8 @@ public class Tela {
 		frmGestoDeNegcios.setBounds(100, 100, 550, 349);
 		frmGestoDeNegcios.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmGestoDeNegcios.getContentPane().setLayout(null);
+		
+		cadastro = new ArrayList<>();
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(0, 0, 524, 279);
@@ -183,7 +187,14 @@ public class Tela {
 	}
 
 	protected void jbtnCadastrarActionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+		if(jcbProfissao.getSelectedItem() == Profissao.Estudante){
+			try {
+				cadastro.add(new Estudante(jtfNome.getText(), Profissao.Estudante, jtfDataDeNascimento.getText(), jtfEmpresa.getText()));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 	}
 
