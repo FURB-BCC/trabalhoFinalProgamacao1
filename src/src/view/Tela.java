@@ -187,13 +187,16 @@ public class Tela {
 	}
 
 	protected void jbtnCadastrarActionPerformed(ActionEvent arg0) {
-		if(jcbProfissao.getSelectedItem() == Profissao.Estudante){
-			try {
-				cadastro.add(new Estudante(jtfNome.getText(), Profissao.Estudante, jtfDataDeNascimento.getText(), jtfEmpresa.getText()));
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		try {
+		if(jcbProfissao.getSelectedItem() == Profissao.Estudante)
+			cadastro.add(new Estudante(jtfNome.getText(), Profissao.Estudante, jtfDataDeNascimento.getText(), jtfEmpresa.getText()));
+		else if(jcbProfissao.getSelectedItem() == Profissao.Aposentado)
+			cadastro.add(new Aposentado(jtfNome.getText(), Profissao.Aposentado, jtfDataDeNascimento.getText()));
+		else if(jcbProfissao.getSelectedItem() == Profissao.Empresario)
+			cadastro.add(new Empresario(jtfNome.getText(), Profissao.Estudante, jtfDataDeNascimento.getText(), jtfEmpresa.getText()));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 	}
