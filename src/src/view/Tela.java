@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JList;
 import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Tela {
 
@@ -22,6 +24,8 @@ public class Tela {
 	private JTextField jtfNome;
 	private JTextField jtfEmpresa;
 	private JTextField jtfDataDeNascimento;
+	private JComboBox jcbProfissao;
+	private JLabel lblEmpresa;
 
 	/**
 	 * Launch the application.
@@ -76,7 +80,7 @@ public class Tela {
 		lblDataDeNascimento.setBounds(21, 104, 193, 26);
 		panel.add(lblDataDeNascimento);
 		
-		JLabel lblEmpresa = new JLabel("Empresa:");
+		lblEmpresa = new JLabel("Empresa:");
 		lblEmpresa.setBounds(21, 145, 92, 26);
 		panel.add(lblEmpresa);
 		
@@ -95,7 +99,12 @@ public class Tela {
 		panel.add(jtfDataDeNascimento);
 		jtfDataDeNascimento.setColumns(10);
 		
-		JComboBox jcbProfissao = new JComboBox(Profissao.values());
+		jcbProfissao = new JComboBox(Profissao.values());
+		jcbProfissao.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				jcbProfissaoActionPerformed(arg0);
+			}
+		});
 		jcbProfissao.setBounds(134, 60, 364, 32);
 		panel.add(jcbProfissao);
 		
@@ -136,5 +145,17 @@ public class Tela {
 		
 		JList jlistEmprestimosAtuais = new JList();
 		scrollPane.setViewportView(jlistEmprestimosAtuais);
+		
+			
 	}
+
+	protected void jcbProfissaoActionPerformed(ActionEvent arg0) {
+		if(jcbProfissao.getSelectedItem() == Profissao.Estudante)
+			lblEmpresa.setText("Instituição:");
+		else
+			lblEmpresa.setText("Empresa:");
+		
+	}
+
+
 }
