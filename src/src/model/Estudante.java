@@ -7,6 +7,7 @@ public class Estudante extends Pessoa{
 	public Estudante(String nome, Profissao profissao, String dataDeNascimento, String instituicao) throws Exception {
 		super(nome, profissao, dataDeNascimento);
 		setInstituicao(instituicao);
+		
 	}
 	
 	/**

@@ -1,34 +1,24 @@
 package src.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public abstract class Pessoa {
 
 	private String nome;
 	private Profissao profissao;
 	private String dataDeNascimento;
-	private double valor = 0;
-	private int quantidadeEmprestimos;
-	private boolean temEmprestimo;
+	private List<Emprestimo> emprestimos;
 
-	public boolean isTemEmprestimo() {
-		return temEmprestimo;
-	}
 
-	public void setTemEmprestimo(boolean temEmprestimo) {
-		this.temEmprestimo = temEmprestimo;
-	}
 
-	public void setValor(double valor) {
-		this.valor = valor;
-	}
-
-	public void setQuantidadeEmprestimos(int quantidadeEmprestimos) {
-		this.quantidadeEmprestimos = quantidadeEmprestimos;
-	}
 
 	public Pessoa(String nome, Profissao profissao, String dataDeNascimento) throws Exception {
 		setNome(nome);
 		setProfissao(profissao);
 		setDataDeNascimento(dataDeNascimento);
+		emprestimos = new ArrayList<Emprestimo>();
 	}
 
 	/**
@@ -83,20 +73,8 @@ public abstract class Pessoa {
 		this.dataDeNascimento = dataDeNascimento;
 	}
 
-	public Double getValor() {
-		return valor;
-	}
-
-	public void setValor(Double valor) {
-		this.valor = valor;
-	}
-
-	public int getQuantidadeEmprestimos() {
-		return quantidadeEmprestimos;
-	}
-
-	public void addQuantidadeEmprestimos() {
-		this.quantidadeEmprestimos++;
+	public List<Emprestimo> getEmprestimos() {
+		return emprestimos;
 	}
 
 }

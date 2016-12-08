@@ -41,7 +41,7 @@ public class Tela {
 	private JComboBox jcbProfissao;
 	private JLabel lblEmpresa;
 	private ArrayList<Pessoa> pessoas;
-
+	private ArrayList<String> nomesNoComboBox;
 	private JList jlistEmprestimosAtuais;
 	private JList jlistPessoasCadastradas;
 	private DefaultListModel emprestimosAtuais;
@@ -82,7 +82,7 @@ public class Tela {
 		frmGestoDeNegcios.getContentPane().setLayout(null);
 
 		pessoas = new ArrayList<>();
-		
+		nomesNoComboBox = new ArrayList<String>();
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(0, 0, 524, 279);
@@ -160,8 +160,9 @@ public class Tela {
 		jbtnEmprestimo.setEnabled(false);
 		jbtnEmprestimo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				jbtnEmprestimoActionPerformed(e);
+				adicionarEmprestimo();
 			}
+
 		});
 		jbtnEmprestimo.setBounds(341, 183, 157, 35);
 		panel_1.add(jbtnEmprestimo);
@@ -188,19 +189,20 @@ public class Tela {
 
 		jcbEmprestimosAtuais = new JComboBox();
 		jcbEmprestimosAtuais.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				exibePessoaComEmprestimo();
+			public void actionPerformed(ActionEvent arg0) {
+				adicionaPessoaListEmprestimos();
 			}
-
 		});
 		jcbEmprestimosAtuais.setBounds(21, 21, 477, 32);
 		panel_2.add(jcbEmprestimosAtuais);
+		jcbEmprestimosAtuais.addItem("Selecione a pessoa");
 
 		jbtnPago = new JButton("Pago");
 		jbtnPago.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				jbtnPagoActionPerformed(e);
+				removeEmprestimo();
 			}
+
 		});
 		jbtnPago.setBounds(357, 183, 141, 35);
 		panel_2.add(jbtnPago);
@@ -216,78 +218,8 @@ public class Tela {
 
 	}
 
-	protected void jbtnPagoActionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	protected void jbtnEmprestimoActionPerformed(ActionEvent e) {
-
-		if (jlistPessoasCadastradas.getSelectedIndex() >= 0) {
-
-			int i = jlistPessoasCadastradas.getSelectedIndex();
-			Pessoa p = pessoas.get(i);
-
-			String s = "Empréstimo - " + p.getNome();
-			if (p instanceof Estudante) {
-				s += "\nEstudante - Valor fixo é de R$1000 - 1 Empréstimo";
-			}
-			if (p instanceof Aposentado) {
-				s += "\nAposentado - Valor fixo é de  R$500, R$1000  - 2 Empréstimos";
-			}
-			if (p instanceof Empresario) {
-				s += "\nEmpresário - Valor ilimitado";
-			}
-
-			String input = JOptionPane.showInputDialog(null, s);
-
-			if (p instanceof Estudante) {
-				if (Integer.parseInt(input) != 1000)
-					JOptionPane.showMessageDialog(null, "Estudantes só podem sacar 1000 reais.");
-				else if (p.getQuantidadeEmprestimos() >= 1)
-					JOptionPane.showMessageDialog(null, "A quantidade máxima de emprestimos para um estudande é 1.");
-				else {
-					p.addQuantidadeEmprestimos();
-					p.setValor(Double.parseDouble(input));
-					p.setTemEmprestimo(true);
-					pessoas.add(p);
-					
-					jcbEmprestimosAtuais.addItem(p.getNome());
-				}
-			}
-
-			if (p instanceof Aposentado) {
-				if (Integer.parseInt(input) != 500 && Integer.parseInt(input) != 1000)
-					JOptionPane.showMessageDialog(null, "Aposentados só podem sacar 500 ou 1000 reais.");
-				else if (p.getQuantidadeEmprestimos() >= 2) {
-					JOptionPane.showMessageDialog(null,
-							"A quantidade máxima de emprestimos para um aposentado é de 2.");
-				} else {
-					p.addQuantidadeEmprestimos();
-					p.setValor(Double.parseDouble(input) + p.getValor());
-
-					p.setTemEmprestimo(true);
-					pessoas.add(p);
-
-					jcbEmprestimosAtuais.addItem(p.getNome());
-				}
-			}
-
-			if (p instanceof Empresario) {
-				p.addQuantidadeEmprestimos();
-				p.setValor(Double.parseDouble(input) + p.getValor());
-
-				p.setTemEmprestimo(true);
-				pessoas.add(p);
-				jcbEmprestimosAtuais.addItem(p.getNome());
-			}
-
-		}
-
-	}
-
 	protected void jbtnCadastrarActionPerformed(ActionEvent arg0) {
-
+		
 		try {
 			if (jcbProfissao.getSelectedItem() == Profissao.Estudante) {
 				Estudante es = new Estudante(jtfNome.getText(), Profissao.Estudante, jtfDataDeNascimento.getText(),
@@ -301,7 +233,7 @@ public class Tela {
 				pessoasCadastradas.addElement(p.getNome());
 
 			} else if (jcbProfissao.getSelectedItem() == Profissao.Empresario) {
-				Empresario em = new Empresario(jtfNome.getText(), Profissao.Estudante, jtfDataDeNascimento.getText(),
+				Empresario em = new Empresario(jtfNome.getText(), Profissao.Empresario, jtfDataDeNascimento.getText(),
 						jtfEmpresa.getText());
 				pessoas.add(em);
 				pessoasCadastradas.addElement(em.getNome());
@@ -309,9 +241,15 @@ public class Tela {
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
-
+		JOptionPane.showMessageDialog(null, "Cadastrado com sucesso!");
+		limpaCampos();
 	}
-
+	public void limpaCampos(){
+		jtfNome.setText("");
+		jtfDataDeNascimento.setText("");
+		jtfEmpresa.setText("");
+	}
+	
 	protected void jcbProfissaoActionPerformed(ActionEvent arg0) {
 		if (jcbProfissao.getSelectedItem() == Profissao.Estudante) {
 			jtfEmpresa.setVisible(true);
@@ -327,11 +265,11 @@ public class Tela {
 	}
 
 	private void validaData() {
-		// if
-		// (!jtfDataDeNascimento.getText().matches("^//d{2}-//d{2}-//d{4}$")){
-		// JOptionPane.showMessageDialog(null, "Data incorreta");
-		// }
-		// jtfDataDeNascimento.requestFocus();
+		if (!jtfDataDeNascimento.getText().matches("(0?[1-9]|[12][0-9]|3[01])/(0?[1-9]|1[012])/((?:19|20)\\d\\d)")) {
+			JOptionPane.showMessageDialog(null, "Data incorreta. DD/MM/AAAA");
+			jtfDataDeNascimento.requestFocus();
+			jtfDataDeNascimento.setText("");
+		}
 	}
 
 	private void exibePessoa() {
@@ -342,20 +280,89 @@ public class Tela {
 		}
 	}
 
-	public void adicionaEmprestimo(Pessoa p) {
-		this.pessoas.add(p);
-		if (p.getQuantidadeEmprestimos() == 0) {
+	private void adicionarEmprestimo() {
+
+		int posicaoSelecionada = jlistPessoasCadastradas.getSelectedIndex();
+		Pessoa p = pessoas.get(posicaoSelecionada);
+		// Garante que, se feito mais que um emprestimo em mesmo nome, é
+		// adicionado corretamente.
+
+		for (int i = 0; i < pessoas.size(); i++) {
+
+			Pessoa pessoa = pessoas.get(i);
+			if (pessoa.getNome().equals(p.getNome()))
+				p = pessoa;
+			pessoas.remove(posicaoSelecionada);
+
+		}
+
+		int valor = Integer.parseInt(JOptionPane.showInputDialog("Informe o valor do empréstimo"));
+
+		if (p instanceof Estudante) {
+			if (valor != 1000) {
+				JOptionPane.showMessageDialog(null, "Estudantes tem a quantia fixa de R$ 1000");
+			} else if (p.getEmprestimos().size() >= 1) {
+				JOptionPane.showMessageDialog(null, "Estudantes tem o limite de 1 empréstimo");
+			} else {
+				Emprestimo emprestimo = new Emprestimo(valor);
+				p.getEmprestimos().add(emprestimo);
+			}
+
+		} else if (p instanceof Aposentado) {
+			if (valor != 500 && valor != 1000) {
+				JOptionPane.showMessageDialog(null, "Aposentados tem a quantia fixa de R$ 500, R$ 1000");
+			} else if (p.getEmprestimos().size() >= 2) {
+				JOptionPane.showMessageDialog(null, "Aposentados tem o limite de 2 empréstimos");
+			} else {
+				Emprestimo emprestimo = new Emprestimo(valor);
+				p.getEmprestimos().add(emprestimo);
+			}
+		} else {
+			Emprestimo emprestimo = new Emprestimo(valor);
+			p.getEmprestimos().add(emprestimo);
+		}
+		adicionaComboBox(p);
+		pessoas.add(posicaoSelecionada, p);
+	}
+
+	public void adicionaComboBox(Pessoa p) {
+
+		if (!nomesNoComboBox.contains(p.getNome()))
 			jcbEmprestimosAtuais.addItem(p.getNome());
+
+		nomesNoComboBox.add(p.getNome());
+	}
+
+	private void adicionaPessoaListEmprestimos() {
+	//	
+		int posicao = jcbEmprestimosAtuais.getSelectedIndex();
+	
+		if (posicao != 0) {
+			String nomeSelecionado = nomesNoComboBox.get(posicao);
+			String texto = "Emprestimo: ";
+			for (Pessoa p : pessoas) {
+
+				if (p.getNome().equals(nomeSelecionado)) {
+					if (p.getEmprestimos().size() > 0) {
+						for (Emprestimo e : p.getEmprestimos()) {
+							String valor = e.getValor() + "";
+							emprestimosAtuais.addElement(texto + valor);
+						}
+					}
+				}
+			}
 		}
 	}
 
-	private void exibePessoaComEmprestimo() {
+	private void removeEmprestimo() {
 
-		int posicao = jcbEmprestimosAtuais.getSelectedIndex();
+		String nome = (String) jcbEmprestimosAtuais.getSelectedItem();
 
-		Pessoa p = pessoas.get(posicao);
-
-		emprestimosAtuais.addElement("Qtd Emprestimos " + p.getQuantidadeEmprestimos() + "\nValor " + p.getValor());
+		for (Pessoa p : pessoas) {
+			if (nome.equals(p.getNome())) {
+				p.getEmprestimos().remove(jlistEmprestimosAtuais.getSelectedIndex());
+				emprestimosAtuais.remove(jlistEmprestimosAtuais.getSelectedIndex());
+			}
+		}
 	}
-
 }
