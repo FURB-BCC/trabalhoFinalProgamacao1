@@ -20,6 +20,7 @@ import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -39,11 +40,13 @@ public class Tela {
 	private JButton jbtnPago;
 	private JComboBox jcbProfissao;
 	private JLabel lblEmpresa;
-	private ArrayList<Pessoa> cadastro;
+	private ArrayList<Pessoa> pessoas;
+
 	private JList jlistEmprestimosAtuais;
 	private JList jlistPessoasCadastradas;
 	private DefaultListModel emprestimosAtuais;
 	private DefaultListModel pessoasCadastradas;
+	private JComboBox jcbEmprestimosAtuais;
 
 	/**
 	 * Launch the application.
@@ -71,14 +74,15 @@ public class Tela {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	public void initialize() {
 		frmGestoDeNegcios = new JFrame();
 		frmGestoDeNegcios.setTitle("Gest\u00E3o de Neg\u00F3cios");
 		frmGestoDeNegcios.setBounds(100, 100, 550, 349);
 		frmGestoDeNegcios.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmGestoDeNegcios.getContentPane().setLayout(null);
 
-		cadastro = new ArrayList<>();
+		pessoas = new ArrayList<>();
+		
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(0, 0, 524, 279);
@@ -121,7 +125,6 @@ public class Tela {
 				validaData();
 			}
 
-			
 		});
 		jtfDataDeNascimento.setToolTipText("DD/MM/AAAA");
 		jtfDataDeNascimento.addKeyListener(new KeyAdapter() {
@@ -172,11 +175,10 @@ public class Tela {
 		jlistPessoasCadastradas = new JList(pessoasCadastradas);
 		jlistPessoasCadastradas.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent arg0) {
+			public void mouseClicked(MouseEvent e) {
 				exibePessoa();
 			}
 
-			
 		});
 		scrollPane_1.setViewportView(jlistPessoasCadastradas);
 
@@ -184,7 +186,13 @@ public class Tela {
 		tabbedPane.addTab("Empr\u00E9stimos atuais", null, panel_2, null);
 		panel_2.setLayout(null);
 
-		JComboBox jcbEmprestimosAtuais = new JComboBox();
+		jcbEmprestimosAtuais = new JComboBox();
+		jcbEmprestimosAtuais.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				exibePessoaComEmprestimo();
+			}
+
+		});
 		jcbEmprestimosAtuais.setBounds(21, 21, 477, 32);
 		panel_2.add(jcbEmprestimosAtuais);
 
@@ -214,7 +222,67 @@ public class Tela {
 	}
 
 	protected void jbtnEmprestimoActionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+
+		if (jlistPessoasCadastradas.getSelectedIndex() >= 0) {
+
+			int i = jlistPessoasCadastradas.getSelectedIndex();
+			Pessoa p = pessoas.get(i);
+
+			String s = "Empréstimo - " + p.getNome();
+			if (p instanceof Estudante) {
+				s += "\nEstudante - Valor fixo é de R$1000 - 1 Empréstimo";
+			}
+			if (p instanceof Aposentado) {
+				s += "\nAposentado - Valor fixo é de  R$500, R$1000  - 2 Empréstimos";
+			}
+			if (p instanceof Empresario) {
+				s += "\nEmpresário - Valor ilimitado";
+			}
+
+			String input = JOptionPane.showInputDialog(null, s);
+
+			if (p instanceof Estudante) {
+				if (Integer.parseInt(input) != 1000)
+					JOptionPane.showMessageDialog(null, "Estudantes só podem sacar 1000 reais.");
+				else if (p.getQuantidadeEmprestimos() >= 1)
+					JOptionPane.showMessageDialog(null, "A quantidade máxima de emprestimos para um estudande é 1.");
+				else {
+					p.addQuantidadeEmprestimos();
+					p.setValor(Double.parseDouble(input));
+					p.setTemEmprestimo(true);
+					pessoas.add(p);
+					
+					jcbEmprestimosAtuais.addItem(p.getNome());
+				}
+			}
+
+			if (p instanceof Aposentado) {
+				if (Integer.parseInt(input) != 500 && Integer.parseInt(input) != 1000)
+					JOptionPane.showMessageDialog(null, "Aposentados só podem sacar 500 ou 1000 reais.");
+				else if (p.getQuantidadeEmprestimos() >= 2) {
+					JOptionPane.showMessageDialog(null,
+							"A quantidade máxima de emprestimos para um aposentado é de 2.");
+				} else {
+					p.addQuantidadeEmprestimos();
+					p.setValor(Double.parseDouble(input) + p.getValor());
+
+					p.setTemEmprestimo(true);
+					pessoas.add(p);
+
+					jcbEmprestimosAtuais.addItem(p.getNome());
+				}
+			}
+
+			if (p instanceof Empresario) {
+				p.addQuantidadeEmprestimos();
+				p.setValor(Double.parseDouble(input) + p.getValor());
+
+				p.setTemEmprestimo(true);
+				pessoas.add(p);
+				jcbEmprestimosAtuais.addItem(p.getNome());
+			}
+
+		}
 
 	}
 
@@ -222,22 +290,24 @@ public class Tela {
 
 		try {
 			if (jcbProfissao.getSelectedItem() == Profissao.Estudante) {
-				Estudante es = new Estudante(jtfNome.getText(), Profissao.Estudante, jtfDataDeNascimento.getText(),jtfEmpresa.getText());
-				cadastro.add(es);
+				Estudante es = new Estudante(jtfNome.getText(), Profissao.Estudante, jtfDataDeNascimento.getText(),
+						jtfEmpresa.getText());
+				pessoas.add(es);
 				pessoasCadastradas.addElement(es.getNome());
-				
+
 			} else if (jcbProfissao.getSelectedItem() == Profissao.Aposentado) {
 				Aposentado p = new Aposentado(jtfNome.getText(), Profissao.Aposentado, jtfDataDeNascimento.getText());
-				cadastro.add(p);
+				pessoas.add(p);
 				pessoasCadastradas.addElement(p.getNome());
-				
+
 			} else if (jcbProfissao.getSelectedItem() == Profissao.Empresario) {
-				Empresario em = new Empresario(jtfNome.getText(), Profissao.Estudante, jtfDataDeNascimento.getText(),jtfEmpresa.getText());  
-				cadastro.add(em);
+				Empresario em = new Empresario(jtfNome.getText(), Profissao.Estudante, jtfDataDeNascimento.getText(),
+						jtfEmpresa.getText());
+				pessoas.add(em);
 				pessoasCadastradas.addElement(em.getNome());
 			}
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null,e.getMessage());
+			JOptionPane.showMessageDialog(null, e.getMessage());
 		}
 
 	}
@@ -255,20 +325,37 @@ public class Tela {
 		}
 
 	}
-	
+
 	private void validaData() {
-		//if (!jtfDataDeNascimento.getText().matches("^//d{2}-//d{2}-//d{4}$")){
-		//	JOptionPane.showMessageDialog(null, "Data incorreta");
-		//}
-		//jtfDataDeNascimento.requestFocus();
-		
+		// if
+		// (!jtfDataDeNascimento.getText().matches("^//d{2}-//d{2}-//d{4}$")){
+		// JOptionPane.showMessageDialog(null, "Data incorreta");
+		// }
+		// jtfDataDeNascimento.requestFocus();
 	}
-	
+
 	private void exibePessoa() {
-		if(jlistPessoasCadastradas.getSelectedIndex() >= 0){
+		if (jlistPessoasCadastradas.getSelectedIndex() >= 0) {
 			int i = jlistPessoasCadastradas.getSelectedIndex();
-			JOptionPane.showMessageDialog(null,cadastro.get(i).toString());
+			JOptionPane.showMessageDialog(null, pessoas.get(i).toString());
 			jbtnEmprestimo.setEnabled(true);
 		}
 	}
+
+	public void adicionaEmprestimo(Pessoa p) {
+		this.pessoas.add(p);
+		if (p.getQuantidadeEmprestimos() == 0) {
+			jcbEmprestimosAtuais.addItem(p.getNome());
+		}
+	}
+
+	private void exibePessoaComEmprestimo() {
+
+		int posicao = jcbEmprestimosAtuais.getSelectedIndex();
+
+		Pessoa p = pessoas.get(posicao);
+
+		emprestimosAtuais.addElement("Qtd Emprestimos " + p.getQuantidadeEmprestimos() + "\nValor " + p.getValor());
+	}
+
 }
